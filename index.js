@@ -44,33 +44,55 @@ async function run() {
             res.send(result);
         })
 
+
+        // app.get('/categories/:id', async (req, res) => {
+        //     const id = parseInt(req.params.category_id);
+        //     const query = { _id: new ObjectId(id) }
+
+        //     const result = await toyCategoryCollection.find(query).toArray();
+
+        //     if (id === 0) {
+        //         res.send(result)
+        //     }
+        //     else {
+        //         const categoryData = result.filter(t => parseInt(t.category_id) === id);
+        //         res.send(categoryData)
+        //     }
+
+        //     res.send(result);
+        // })
+
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
 
             const options = {
-               
+
                 // Include only the `title` and `imdb` fields in the returned document
-                projection: {  name: 1, category_id:1, price:1, picture:1, details:1,rating:1,available_Quantity:1 },
-              };
+                projection: { name: 1, category_id: 1, price: 1, picture: 1, details: 1, rating: 1, available_Quantity: 1 },
+            };
 
             const result = await toysCollection.findOne(query, options);
             res.send(result);
         })
 
+        
+        app.get('/categories/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
 
-        // app.get('/categories/:id', (req, res) => {
-        //     const id = parseInt(req.params._id);
-        //     console.log(id)
-        //     if (id === 0) {
-        //         res.send(toysCollection)
-        //     }
-        //     else {
-        //         const categoryData = toysCollection.filter(c => parseInt(c.category_id) === id);
-        //         res.send(categoryData)
-        //     }
+            const options = {
 
-        // })
+                // Include only the `title` and `imdb` fields in the returned document
+                projection: { name: 1, category_id: 1, img:1 },
+            };
+
+            const result = await toyCategoryCollection.findOne(query, options);
+            res.send(result);
+        })
+
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
