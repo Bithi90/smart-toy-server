@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 // middleware
 app.use(cors());
 app.use(express.json());
- 
+
 console.log(process.env.DB_PASS)
 
 
@@ -28,22 +28,49 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-        const  toysCollection = client.db('disneyToy').collection('toys');
+        const toysCollection = client.db('disneyToy').collection('toys');
 
-        app.get('/toys', async(req, res) =>{
+        app.get('/toys', async (req, res) => {
             const cursor = toysCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        const toyCategoryCollection = client.db('toyCategory').collection('category');
+        const toyCategoryCollection = client.db('toysCategory').collection('categories');
 
-        app.get('/category', async(req, res) =>{
+        app.get('/categories', async (req, res) => {
             const cursor = toyCategoryCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
+        app.get('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+
+            const options = {
+               
+                // Include only the `title` and `imdb` fields in the returned document
+                projection: {  name: 1, category_id:1, price:1, picture:1, details:1,rating:1,available_Quantity:1 },
+              };
+
+            const result = await toysCollection.findOne(query, options);
+            res.send(result);
+        })
+
+
+        // app.get('/categories/:id', (req, res) => {
+        //     const id = parseInt(req.params._id);
+        //     console.log(id)
+        //     if (id === 0) {
+        //         res.send(toysCollection)
+        //     }
+        //     else {
+        //         const categoryData = toysCollection.filter(c => parseInt(c.category_id) === id);
+        //         res.send(categoryData)
+        //     }
+
+        // })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
