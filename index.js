@@ -29,7 +29,7 @@ async function run() {
         await client.connect();
 
         const toysCollection = client.db('disneyToy').collection('toys');
-        const addedCollection = client.db('NewToy').collection('addedToy')
+        const addedCollection = client.db('NewToy').collection('addedToy');
 
         app.get('/toys', async (req, res) => {
             const cursor = toysCollection.find();
@@ -45,9 +45,20 @@ async function run() {
             res.send(result);
         })
 
-        app.post('addedToy', async(req, res) =>{
+        // addtoy
+
+        app.post('/addedToy', async (req, res) => {
             const addToy = req.body;
             console.log(addToy);
+            const result = await addedCollection.insertOne(addToy);
+            res.send(result);
+        })
+
+        app.get('/addedToy/', async (req, res) => {
+            // console.log(req.query);
+            const cursor = addedCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
         })
 
 
@@ -66,29 +77,23 @@ async function run() {
         })
 
 
-        // app.get('/categories/:category_id', async(req, res) => {
-        //     const id = (req.params.category_id);
-        //     const query = {};
-            
-        //     console.log(id);
-        //     if (id == 0) {
-        //         const cursor = toysCollection.find();
-        //         const result = await cursor.toArray();
-        //         res.send(result);
-        //     }
-        //     else {
-        //         const query = { category_id: new ObjectId(id) }
-        //         const cursor = toysCollection.find(query);
-        //         const result = await cursor.toArray();
 
-               
-        //         // const results = toysCollection.find(query);
-        //         res.send(result);
-        //     }
+        app.get("/category/:id", async (req, res) => {
+            const id = req.params.id;
 
-        // })
+            const filter = { category_id: id };
+            const result = await toysCollection.find(filter).toArray();
 
-        
+            res.send(result)
+        })
+
+        app.get("/category", async (req, res) => {
+
+            const result = await toysCollection.find().toArray();
+
+            res.send(result);
+        })
+
 
         app.get('/categories/:id', async (req, res) => {
             const id = req.params.id;
