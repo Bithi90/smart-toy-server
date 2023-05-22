@@ -80,6 +80,16 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get('/toys', async(req, res) => {
+            console.log(req.query);
+            // let query = {};
+            // if(req.query?.sellerEmail){
+            //     query = {sellerEmail: req.query.sellerEmail}
+            // }
+            const result = await toysCollection.find().toArray();
+            res.send(result);
+        })
+       
 
         app.delete('/addedToy/:id', async(req, res) =>{
             const id = req.params.id;
@@ -112,6 +122,7 @@ async function run() {
 
             res.send(result)
         })
+        
 
         app.get("/category", async (req, res) => {
 
