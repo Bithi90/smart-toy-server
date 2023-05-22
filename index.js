@@ -45,23 +45,6 @@ async function run() {
         })
 
 
-        // app.get('/categories/:id', async (req, res) => {
-        //     const id = parseInt(req.params.category_id);
-        //     const query = { _id: new ObjectId(id) }
-
-        //     const result = await toyCategoryCollection.find(query).toArray();
-
-        //     if (id === 0) {
-        //         res.send(result)
-        //     }
-        //     else {
-        //         const categoryData = result.filter(t => parseInt(t.category_id) === id);
-        //         res.send(categoryData)
-        //     }
-
-        //     res.send(result);
-        // })
-
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -76,7 +59,20 @@ async function run() {
             res.send(result);
         })
 
-        
+
+        app.get('/categories/:category_id', (req, res) =>{
+            const id = (req.params.category_id);
+            console.log(id);
+            if(id === 0){
+                res.send(toysCollection)
+            }
+            else{
+                const categoryData = toysCollection.find(t=> (t.category_id)===id);
+                res.send(categoryData) 
+            }
+           
+        })
+
         app.get('/categories/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -84,7 +80,7 @@ async function run() {
             const options = {
 
                 // Include only the `title` and `imdb` fields in the returned document
-                projection: { name: 1, category_id: 1, img:1 },
+                projection: { name: 1, category_id: 1, img: 1 },
             };
 
             const result = await toyCategoryCollection.findOne(query, options);
