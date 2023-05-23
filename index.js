@@ -80,16 +80,7 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
-        app.get('/toys/:category_id', async(req, res) => {
-            console.log(req.params.category_id);
-           
-            if(req.params.category_id){
-                const result = await toysCollection.find({category_id:req.params.category_id}).toArray();
-                return res.send(result);
-            }
-           
-            res.send(result);
-        })
+       
        
 
         app.delete('/addedToy/:id', async(req, res) =>{
